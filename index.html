@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Garrison Bowen • Leader, AI Builder</title>
+<meta name="description" content="Garrison Bowen: Marine veteran, UC Berkeley psychology student, and founder building AI tools for real work.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ece6dc;
+    --glow-a: #f2d3b3;   /* peach */
+    --glow-b: #cfe0f0;   /* sky */
+    --ink: #1d2b4f;      /* deep navy, replaces the original's forest green */
+    --text: #3b3f4a;
+    --muted: #6b6f7a;
+    --pill: rgba(255,255,255,.55);
+    --pill-border: rgba(0,0,0,.06);
+    --card-ink: #2a2d35;
+    --c-lav: #b9a7e6;
+    --c-amber: #f0bb72;
+    --c-sage: #a6d1b6;
+    --c-sky: #b7d4f3;
+    --c-white: #ffffff;
+    --c-dark: #1c1d21;
+    --c-atlas: #0f2740;
+    --c-cyan: #bfe6ee;
+    --screen: #ffffff;
+    --line: rgba(0,0,0,.08);
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171c; --glow-a: #3a2e2a; --glow-b: #1e2a3a; --ink: #e9ecf5; --text: #c9ccd4;
+    --muted: #8d919b; --pill: rgba(255,255,255,.08); --pill-border: rgba(255,255,255,.08);
+    --card-ink: #1f2128; --c-white: #23252c; --c-dark: #0d0e11; --screen: #f7f7f9; --line: rgba(255,255,255,.1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15171c; --glow-a: #3a2e2a; --glow-b: #1e2a3a; --ink: #e9ecf5; --text: #c9ccd4;
+      --muted: #8d919b; --pill: rgba(255,255,255,.08); --pill-border: rgba(255,255,255,.08);
+      --card-ink: #1f2128; --c-white: #23252c; --c-dark: #0d0e11; --screen: #f7f7f9; --line: rgba(255,255,255,.1);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "DM Sans", system-ui, sans-serif; font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased; transition: background .4s ease, color .4s ease;
+  }
+  body.locked { overflow: hidden; }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+
+  .glow {
+    position: absolute; inset: 0 0 auto 0; height: 760px; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(60% 70% at 10% 0%, var(--glow-a) 0%, transparent 70%),
+      radial-gradient(55% 70% at 95% 5%, var(--glow-b) 0%, transparent 70%);
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+            mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  }
+
+  nav {
+    position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 10;
+    display: flex; gap: 4px; padding: 5px;
+    background: var(--pill); border: 1px solid var(--pill-border); border-radius: 999px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  }
+  nav a { font-size: 14px; font-weight: 500; color: var(--text); padding: 6px 14px; border-radius: 999px; transition: background .2s; }
+  nav a:hover { background: var(--pill); }
+  nav a.active { background: rgba(255,255,255,.7); color: #2a2d35; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+
+  .hero { text-align: center; padding: 150px 0 70px; }
+  .big {
+    font-family: "Bricolage Grotesque", sans-serif; font-weight: 800;
+    color: var(--ink); letter-spacing: -0.035em; line-height: .98;
+    font-size: clamp(52px, 10vw, 112px);
+  }
+  .roles { display: block; margin-top: 18px; font-size: clamp(30px, 5vw, 58px); letter-spacing: -0.03em; text-wrap: balance; opacity: .85; }
+  .lede { max-width: 470px; margin: 34px auto 0; font-size: 17px; }
+  .section-head { text-align: center; padding: 140px 0 60px; }
+  .section-head .big { font-size: clamp(46px, 8vw, 96px); }
+
+  /* ---------- cards ---------- */
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 46px; margin-bottom: 46px; }
+  .card {
+    position: relative; overflow: hidden; border-radius: 48px; cursor: pointer;
+    height: 400px; padding: 36px 44px 0; color: var(--card-ink);
+    transition: transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s cubic-bezier(.2,.8,.2,1);
+    outline: none;
+  }
+  .card:hover, .card:focus-visible {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 34px 60px -24px rgba(20,30,60,.35);
+  }
+  .card:focus-visible { box-shadow: 0 0 0 3px var(--ink), 0 34px 60px -24px rgba(20,30,60,.35); }
+  .card.is-open { visibility: hidden; }
+  .span-4 { grid-column: span 5; }
+  .span-8 { grid-column: span 7; }
+  .label { text-align: right; position: relative; z-index: 2; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; opacity: .75; }
+  .card h3 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 32px; letter-spacing: -0.03em; line-height: 1.1; margin-top: 2px; }
+  .card .blurb { font-size: 14px; max-width: 300px; margin: 8px 0 0 auto; opacity: .8; line-height: 1.45; }
+  .logo { position: absolute; top: 32px; left: 36px; height: 46px; width: auto; z-index: 2; }
+
+  /* "open" button that appears on hover */
+  .more {
+    position: absolute; right: 22px; bottom: 22px; z-index: 4;
+    width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+    background: rgba(255,255,255,.9); color: #1d2b4f; font-size: 24px; font-weight: 500; line-height: 1;
+    box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    opacity: 0; transform: scale(.6); transition: opacity .3s, transform .35s cubic-bezier(.2,.8,.2,1);
+  }
+  .card:hover .more, .card:focus-visible .more { opacity: 1; transform: scale(1); }
+  @media (hover: none) { .more { opacity: 1; transform: scale(1); } }
+
+  .lav { background: var(--c-lav); }
+  .amber { background: var(--c-amber); }
+  .sage { background: var(--c-sage); }
+  .sky { background: var(--c-sky); }
+  .cyan { background: var(--c-cyan); }
+  .white { background: var(--c-white); color: var(--ink); }
+  .dark { background: var(--c-dark); color: #f2f2f4; }
+  .atlas { background: radial-gradient(120% 90% at 80% 100%, #164a72 0%, var(--c-atlas) 60%); color: #eaf6fb; }
+
+  /* mock screens */
+  .screen {
+    position: absolute; left: 44px; right: -2px; bottom: -2px; height: 210px;
+    background: var(--screen); border-radius: 14px 0 0 0;
+    box-shadow: 0 10px 40px rgba(0,0,0,.12); overflow: hidden; color: #2a2d35;
+  }
+  .bar { height: 34px; background: #1d2b4f; display: flex; align-items: center; gap: 10px; padding: 0 14px; }
+  .bar i { display: block; height: 7px; border-radius: 4px; background: rgba(255,255,255,.35); width: 32px; }
+  .bar i:first-child { width: 46px; background: rgba(255,255,255,.75); }
+  .pad { padding: 16px 18px; }
+
+  .modules { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mod { border: 1px solid #ecebf3; border-radius: 9px; padding: 8px 10px; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 7px; }
+  .mod b { width: 16px; height: 16px; border-radius: 5px; background: #e5defa; flex: none; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 600; color: #6a4fd1; background: #efeaff; padding: 2px 8px; border-radius: 999px; margin-bottom: 10px; }
+
+  .blueprint {
+    position: absolute; left: 0; top: 34px; bottom: 0; width: 58%;
+    background-color: #24476e;
+    background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+  .room { position: absolute; border: 1.5px solid rgba(255,255,255,.55); }
+  .dev { position: absolute; width: 11px; height: 11px; border-radius: 50%; border: 2px solid #ffd27a; }
+  .dev.hit { background: #ffd27a; }
+  .stats { position: absolute; left: 58%; right: 0; top: 34px; bottom: 0; padding: 18px; display: grid; gap: 10px; align-content: start; }
+  .stat { border: 1px solid #eee; border-radius: 10px; padding: 8px 12px; }
+  .stat small { display: block; font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: .08em; }
+  .stat strong { font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; color: #1d2b4f; }
+
+  /* Service card: photo on the left half */
+  .chip-logo { background: #1d2b4f; padding: 8px 12px; border-radius: 14px; box-sizing: content-box; height: 30px !important; }
+  .svc-photo { position: absolute; left: 0; top: 0; height: 100%; width: 42%; object-fit: cover; object-position: center 20%; }
+  .svc-body { margin-left: 42%; padding-left: 8px; }
+  .record { display: grid; gap: 9px; margin-top: 26px; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: rgba(255,255,255,.55); border-radius: 14px; padding: 10px 14px; font-size: 13.5px; font-weight: 600; }
+  .row span { font-weight: 500; opacity: .7; font-size: 12.5px; text-align: right; }
+
+  .paws { position: absolute; left: 36px; right: 36px; bottom: 34px; display: grid; gap: 10px; }
+  .chip { background: rgba(255,255,255,.55); border-radius: 14px; padding: 12px 16px; font-size: 14px; font-weight: 600; }
+  .chip span { display: block; font-size: 12px; font-weight: 500; opacity: .7; }
+
+  .phone {
+    position: absolute; left: 56px; bottom: -60px;
+    width: 230px; height: 330px; border-radius: 40px; background: #111; padding: 9px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.18);
+  }
+  .phone-in { background: #f4f5f7; border-radius: 32px; height: 100%; overflow: hidden; color: #2a2d35; }
+  .phone-top { background: #1d2b4f; color: #fff; padding: 34px 18px 22px; text-align: center; border-radius: 0 0 50% 50% / 0 0 22px 22px; }
+  .phone-top p { font-size: 11px; opacity: .7; }
+  .phone-top h4 { font-family: "Bricolage Grotesque", sans-serif; font-size: 17px; }
+  .checkin { display: flex; justify-content: center; gap: 12px; padding: 18px 0 10px; }
+  .checkin b { width: 38px; height: 38px; border-radius: 50%; display: block; }
+  .checkin-label { text-align: center; font-size: 11px; color: #777; }
+
+  .panel {
+    position: absolute; left: 36px; right: 36px; bottom: -2px; height: 220px;
+    background: #2a2b31; border-radius: 16px 16px 0 0; padding: 16px; font-size: 12px; color: #cfd2da;
+  }
+  .panel .dots { display: flex; gap: 6px; margin-bottom: 14px; }
+  .panel .dots i { width: 9px; height: 9px; border-radius: 50%; background: #55575f; display: block; }
+  .nm { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; background: #33343b; margin-bottom: 8px; }
+  .nm b { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+
+  /* A.T.L.A.S. cards */
+  .atlas-head { position: absolute; left: 50%; bottom: -40px; transform: translateX(-50%); width: 300px; opacity: .95; }
+  .flow { position: absolute; left: 44px; right: 44px; bottom: 36px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .step { background: rgba(255,255,255,.7); border-radius: 18px; padding: 14px 16px; }
+  .step small { display: block; font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; opacity: .6; }
+  .step strong { display: block; font-family: "Bricolage Grotesque", sans-serif; font-size: 19px; color: #0f2740; margin-top: 2px; }
+  .step span { font-size: 12px; opacity: .75; line-height: 1.35; display: block; margin-top: 4px; }
+
+  /* ---------- expanded detail sheet ---------- */
+  .backdrop {
+    position: fixed; inset: 0; z-index: 40; background: rgba(15,20,35,.45);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    opacity: 0; pointer-events: none; transition: opacity .45s ease;
+  }
+  .backdrop.show { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed; z-index: 50; overflow: hidden; display: none;
+    border-radius: 48px; color: var(--card-ink);
+    transition: top .55s cubic-bezier(.2,.8,.2,1), left .55s cubic-bezier(.2,.8,.2,1),
+                width .55s cubic-bezier(.2,.8,.2,1), height .55s cubic-bezier(.2,.8,.2,1),
+                border-radius .55s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 40px 100px -30px rgba(0,0,0,.5);
+  }
+  .sheet-body {
+    position: absolute; inset: 0; overflow-y: auto; padding: 56px 64px 64px;
+    opacity: 0; transform: translateY(14px); transition: opacity .35s ease, transform .45s cubic-bezier(.2,.8,.2,1);
+  }
+  .sheet.ready .sheet-body { opacity: 1; transform: none; }
+  .close {
+    position: absolute; top: 20px; right: 20px; z-index: 3; width: 44px; height: 44px; border-radius: 50%;
+    border: 0; cursor: pointer; background: rgba(255,255,255,.85); color: #1d2b4f; font-size: 22px; line-height: 1;
+    opacity: 0; transition: opacity .3s;
+  }
+  .sheet.ready .close { opacity: 1; }
+  .d-top { display: flex; align-items: center; gap: 18px; margin-bottom: 8px; }
+  .d-top img { height: 54px; width: auto; }
+  .d-title { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; letter-spacing: -0.035em; line-height: 1; font-size: clamp(40px, 6vw, 68px); }
+  .d-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 28px; }
+  .d-meta span { font-size: 13px; font-weight: 600; background: rgba(255,255,255,.55); padding: 5px 12px; border-radius: 999px; }
+  .dark .d-meta span, .atlas .d-meta span { background: rgba(255,255,255,.12); }
+  .d-lede { font-size: 20px; line-height: 1.5; max-width: 680px; margin-bottom: 34px; }
+  .d-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: start; }
+  .d-grid h4 { font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; opacity: .65; margin-bottom: 12px; }
+  .d-list { list-style: none; display: grid; gap: 12px; }
+  .d-list li { position: relative; padding-left: 20px; font-size: 16px; line-height: 1.5; }
+  .d-list li::before { content: ""; position: absolute; left: 0; top: .6em; width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .45; }
+  .d-stats { display: grid; gap: 12px; }
+  .d-stat { background: rgba(255,255,255,.55); border-radius: 20px; padding: 16px 20px; }
+  .dark .d-stat, .atlas .d-stat { background: rgba(255,255,255,.1); }
+  .d-stat strong { display: block; font-family: "Bricolage Grotesque", sans-serif; font-size: 30px; letter-spacing: -0.02em; line-height: 1.1; }
+  .d-stat span { font-size: 13px; opacity: .75; }
+  .d-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 6px 0 36px; }
+  .d-gallery img { width: 100%; height: 260px; object-fit: cover; border-radius: 22px; }
+  .d-gallery img.tall { object-position: center 25%; }
+  .d-quote { margin-top: 40px; padding: 28px 32px; border-radius: 24px; background: rgba(255,255,255,.55); }
+  .d-quote blockquote { font-size: 18px; line-height: 1.6; font-style: italic; }
+  .d-quote figcaption { margin-top: 14px; font-size: 14px; font-weight: 600; opacity: .75; }
+  .d-shots { margin-top: 44px; }
+  .d-shots h4 { font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; opacity: .65; margin-bottom: 14px; }
+  .shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+  .shots img { width: 100%; height: auto; max-height: 520px; object-fit: contain; border-radius: 18px; background: rgba(255,255,255,.4); box-shadow: 0 10px 30px -12px rgba(0,0,0,.3); transition: transform .3s; }
+  .shots a:hover img { transform: scale(1.03); }
+  .shots.phones { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+  .shots.phones img { max-height: none; object-fit: contain; border-radius: 26px; }
+  .d-note { margin-top: 34px; font-size: 14px; opacity: .7; }
+
+  /* ---------- about ---------- */
+  .about { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+  .about p { font-size: 18px; margin-bottom: 18px; }
+  .headshot { width: 200px; height: 240px; object-fit: cover; object-position: center 20%; border-radius: 28px; margin-bottom: 28px; }
+  .timeline { list-style: none; border-top: 1px solid var(--line); }
+  .timeline li { display: flex; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+  .timeline strong { display: block; color: var(--ink); font-weight: 600; }
+  .timeline span { font-size: 14px; color: var(--muted); }
+  .timeline time { font-size: 14px; color: var(--muted); white-space: nowrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 10px;
+    background: var(--ink); color: var(--bg); font-weight: 600; font-size: 15px;
+    padding: 12px 22px; border-radius: 999px; transition: transform .2s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+
+  footer.wrap { padding-top: 160px; padding-bottom: 60px; }
+  .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; max-width: 780px; margin: 0 auto; font-size: 14px; }
+  .cols { display: flex; gap: 70px; }
+  .cols h5 { color: var(--ink); font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+  .cols a { display: block; margin-bottom: 10px; color: var(--muted); }
+  .cols a:hover { color: var(--ink); }
+  .ruler { display: flex; justify-content: center; align-items: flex-end; gap: 26px; margin-top: 12px; height: 34px; }
+  .ruler i { width: 1.5px; background: var(--muted); opacity: .35; display: block; height: 10px; }
+  .ruler i.mid { opacity: .7; height: 18px; }
+  .ruler i.top { opacity: 1; height: 30px; background: var(--ink); }
+  .toggle { display: block; margin: 70px auto 0; width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--ink); color: var(--bg); cursor: pointer; font-size: 16px; }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.8,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .card.reveal.in:hover, .card.reveal.in:focus-visible { transform: translateY(-8px) scale(1.03); }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .card:hover, .card.reveal.in:hover { transform: none; }
+    .sheet, .sheet-body { transition: none; }
+  }
+
+  @media (max-width: 860px) {
+    .grid { gap: 20px; margin-bottom: 20px; }
+    .span-4, .span-8 { grid-column: span 12; }
+    .card { border-radius: 32px; padding: 28px 24px 0; height: 380px; }
+    .card:hover, .card.reveal.in:hover { transform: none; box-shadow: none; }
+    .logo { top: 24px; left: 24px; height: 38px; }
+    .screen { left: 24px; }
+    .paws { position: static; margin-top: 24px; }
+    .card:has(.paws) { height: auto; padding-bottom: 24px; }
+    .card.svc { height: auto; padding: 0 0 80px; }
+    .card:has(.paws) { padding-bottom: 80px; }
+    .svc-photo { position: static; width: 100%; height: 260px; }
+    .svc-body { margin: 0; padding: 24px 24px 0; }
+    .phone { left: 50%; transform: translateX(-50%); bottom: -150px; }
+    .flow { left: 24px; right: 24px; grid-template-columns: 1fr; gap: 8px; bottom: 24px; }
+    .step span { display: none; }
+    .about { grid-template-columns: 1fr; gap: 30px; }
+    .hero { padding-top: 120px; }
+    nav a { padding: 6px 10px; font-size: 13px; }
+    .sheet-body { padding: 64px 24px 40px; }
+    .d-grid { grid-template-columns: 1fr; gap: 28px; }
+    .d-gallery { grid-template-columns: 1fr; }
+    .d-gallery img { height: 220px; }
+    .d-lede { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<nav>
+  <a href="#work" class="active">Work</a>
+  <a href="#progress">Building</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<header class="hero wrap">
+  <h1 class="big">Hey. I'm Garrison.<span class="roles">Leader. AI Builder. Force Multiplier.</span></h1>
+  <p class="lede">Marine veteran and Berkeley psychology student. I build AI tools that cut real work from days to hours.</p>
+</header>
+
+<main class="wrap" id="work">
+  <div class="grid">
+    <article class="card lav span-4 reveal" data-detail="ithildin" tabindex="0" role="button" aria-label="Ithildin: open details">
+      <img class="logo chip-logo" src="assets/ithildin-logo.png" alt="">
+      <div class="label">
+        <div class="eyebrow">Ithildin</div>
+        <h3>Go-to-Market</h3>
+      </div>
+      <div class="screen">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <div class="pad">
+          <span class="tag">Runs every day</span>
+          <div class="modules">
+            <div class="mod"><b></b>Outreach</div>
+            <div class="mod"><b></b>Market research</div>
+            <div class="mod"><b></b>Analytics</div>
+            <div class="mod"><b></b>Claude skills</div>
+          </div>
+        </div>
+      </div>
+      <span class="more" aria-hidden="true">+</span>
+    </article>
+
+    <article class="card amber span-8 reveal" data-detail="swinson" tabindex="0" role="button" aria-label="Swinson Electric: open details">
+      <img class="logo" src="assets/swinson-logo.png" alt="" style="height:40px">
+      <div class="label">
+        <div class="eyebrow">Swinson Electric</div>
+        <h3>AI Takeoffs</h3>
+        <p class="blurb">Reads commercial electrical blueprints and counts every device, with a second AI model checking the first.</p>
+      </div>
+      <div class="screen">
+        <div class="bar"><i></i><i></i><i></i><i></i></div>
+        <div class="blueprint">
+          <div class="room" style="left:8%;top:12%;width:44%;height:46%"></div>
+          <div class="room" style="left:52%;top:12%;width:38%;height:72%"></div>
+          <div class="room" style="left:8%;top:58%;width:44%;height:26%"></div>
+          <span class="dev hit" style="left:16%;top:22%"></span>
+          <span class="dev hit" style="left:38%;top:30%"></span>
+          <span class="dev hit" style="left:62%;top:26%"></span>
+          <span class="dev" style="left:78%;top:52%"></span>
+          <span class="dev hit" style="left:24%;top:68%"></span>
+          <span class="dev hit" style="left:66%;top:70%"></span>
+        </div>
+        <div class="stats">
+          <div class="stat"><small>Device accuracy</small><strong>97%</strong></div>
+          <div class="stat"><small>Hours per job</small><strong>30–40 → ~8</strong></div>
+        </div>
+      </div>
+      <span class="more" aria-hidden="true">+</span>
+    </article>
+  </div>
+
+  <div class="grid">
+    <article class="card sky span-8 svc reveal" data-detail="service" tabindex="0" role="button" aria-label="Marine Corps service: open details">
+      <img class="svc-photo" src="assets/usmc-gear.jpg" alt="Garrison in Marine Corps field gear">
+      <div class="svc-body">
+        <div class="label">
+          <div class="eyebrow">U.S. Marine Corps · 2018–2022</div>
+          <h3>Service</h3>
+        </div>
+        <div class="record">
+          <div class="row">Military Police <span>370+ calls</span></div>
+          <div class="row">Special Reaction Team <span>SWAT</span></div>
+          <div class="row">K9 Handler <span>Detection dogs</span></div>
+          <div class="row">Achievement Medal <span>Above rank</span></div>
+        </div>
+      </div>
+      <span class="more" aria-hidden="true">+</span>
+    </article>
+
+    <article class="card sage span-4 reveal" data-detail="k9" tabindex="0" role="button" aria-label="GB K9 Training: open details">
+      <div class="label">
+        <div class="eyebrow">Founder</div>
+        <h3>GB K9 Training</h3>
+      </div>
+      <div class="paws">
+        <div class="chip">25 dogs trained<span>From first call to finished program</span></div>
+        <div class="chip">$12,000 revenue<span>Mill Valley, 2024–2025</span></div>
+        <div class="chip">“As insightful and patient with us as he was with our two pups.”<span>Client testimonial</span></div>
+      </div>
+      <span class="more" aria-hidden="true">+</span>
+    </article>
+  </div>
+
+  <section id="progress">
+    <div class="section-head reveal">
+      <h2 class="big">In Progress.</h2>
+      <p class="lede">Things I'm building now, from a veteran app to the AI system that runs my day.</p>
+    </div>
+
+    <div class="grid">
+      <article class="card white span-8 reveal" data-detail="buddy" tabindex="0" role="button" aria-label="Buddy Check: open details">
+        <div class="label">
+          <div class="eyebrow">Buddy Check LLC</div>
+          <h3>Buddy Check</h3>
+          <p class="blurb">A veteran-only app that connects service members with each other and with mental health support.</p>
+        </div>
+        <div class="phone"><div class="phone-in">
+          <div class="phone-top"><p>Connection to Base</p><h4>How are you today?</h4></div>
+          <div class="checkin"><b style="background:#5cbf87"></b><b style="background:#f2c14e"></b><b style="background:#e8645a"></b></div>
+          <p class="checkin-label">Daily check-in</p>
+        </div></div>
+        <span class="more" aria-hidden="true">+</span>
+      </article>
+
+      <article class="card dark span-4 reveal" data-detail="jarvis" tabindex="0" role="button" aria-label="JARVIS: open details">
+        <div class="label">
+          <div class="eyebrow">Personal</div>
+          <h3>JARVIS</h3>
+        </div>
+        <div class="panel">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="nm"><b style="background:#7ec8a0"></b>Daily brief ready</div>
+          <div class="nm"><b style="background:#f2c14e"></b>2 assignments due Thu</div>
+          <div class="nm"><b style="background:#8ab4f8"></b>Job tracker synced</div>
+        </div>
+        <span class="more" aria-hidden="true">+</span>
+      </article>
+    </div>
+
+    <div class="grid">
+      <article class="card atlas span-4 reveal" data-detail="atlas" tabindex="0" role="button" aria-label="A.T.L.A.S.: open details">
+        <div class="label">
+          <div class="eyebrow">Venture</div>
+          <h3>A.T.L.A.S.</h3>
+          <p class="blurb">Teaching people AI and how to put it to work in their own jobs.</p>
+        </div>
+        <img class="atlas-head" src="assets/atlas-icon.png" alt="">
+        <span class="more" aria-hidden="true">+</span>
+      </article>
+
+      <article class="card cyan span-8 reveal" data-detail="estimating" tabindex="0" role="button" aria-label="A.T.L.A.S. Estimating: open details">
+        <img class="logo" src="assets/atlas-icon.png" alt="" style="height:52px">
+        <div class="label">
+          <div class="eyebrow">A.T.L.A.S. · Starting market</div>
+          <h3>AI Estimating</h3>
+          <p class="blurb">Helping electrical contractors focus on the work that pays.</p>
+        </div>
+        <div class="flow">
+          <div class="step"><small>Step 1</small><strong>Read</strong><span>AI reads the blueprint set</span></div>
+          <div class="step"><small>Step 2</small><strong>Count</strong><span>Every device, sheet by sheet</span></div>
+          <div class="step"><small>Step 3</small><strong>Verify</strong><span>A second model checks the count</span></div>
+        </div>
+        <span class="more" aria-hidden="true">+</span>
+      </article>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="section-head reveal">
+      <h2 class="big">About.</h2>
+    </div>
+    <div class="about reveal">
+      <div>
+        <img class="headshot" src="assets/headshot.jpg" alt="Garrison Bowen">
+        <p>I spent four years in the Marine Corps as a military police officer, SWAT team member and K9 handler. Now I study psychology at UC Berkeley as a Regents' and Chancellor's Scholar, and the first in my family to go to college.</p>
+        <p>What I care about is people and the work they're stuck doing. I find the slow, repetitive part of a job and build the AI tool that takes it off their plate.</p>
+      </div>
+      <ul class="timeline">
+        <li><div><strong>Ithildin</strong><span>Chief of Staff Intern, Market Strategy</span></div><time>2026–</time></li>
+        <li><div><strong>A.T.L.A.S.</strong><span>Founder and CEO</span></div><time>2026–</time></li>
+        <li><div><strong>Swinson Electric</strong><span>AI Integration Intern</span></div><time>2026</time></li>
+        <li><div><strong>Buddy Check LLC</strong><span>Creator and Founder</span></div><time>2022–</time></li>
+        <li><div><strong>GB K9 Training</strong><span>Director and Founder</span></div><time>2024–2025</time></li>
+        <li><div><strong>Marin Chess</strong><span>Manager and Teacher, 9 sites</span></div><time>2023–2025</time></li>
+        <li><div><strong>UC Berkeley</strong><span>B.A. Psychology</span></div><time>2027</time></li>
+        <li><div><strong>U.S. Marine Corps</strong><span>MP, SWAT, K9 Handler</span></div><time>2018–2022</time></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer id="contact" class="wrap">
+  <div class="foot">
+    <p style="color:var(--muted)">© 2026 Garrison Bowen</p>
+    <div class="cols">
+      <div><h5>Elsewhere</h5><a href="https://www.linkedin.com/in/garrison-bowen">LinkedIn</a></div>
+      <div><h5>Contact</h5><a href="mailto:gb2520@berkeley.edu">Email</a></div>
+    </div>
+  </div>
+  <button class="toggle" id="toggle" aria-label="Switch light or dark mode">☀</button>
+  <div class="ruler" id="ruler"></div>
+</footer>
+
+<!-- expanded views -->
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <button class="close" id="close" aria-label="Close">×</button>
+  <div class="sheet-body" id="sheetBody"></div>
+</div>
+
+<template id="d-ithildin">
+  <div class="d-top"><img class="chip-logo" src="assets/ithildin-logo.png" alt="Ithildin logo"></div>
+  <h2 class="d-title">Go-to-Market</h2>
+  <div class="d-meta"><span>Chief of Staff Intern, Market Strategy</span><span>GTM and Marketing teams</span><span>Sep 2026 – Present</span><span>Berkeley SkyDeck</span></div>
+  <p class="d-lede">Ithildin is a legal AI startup that flags deposition testimony contradicting the case record. I work across the GTM and marketing teams on how we bring it to market: automating outreach, running market research, and using analytics to tailor our approach.</p>
+  <div class="d-grid">
+    <div>
+      <h4>What I do</h4>
+      <ul class="d-list">
+        <li>Build the automations behind GTM and marketing outreach. They run as scheduled tasks every day, so research and outreach keep moving without anyone starting them by hand.</li>
+        <li>Run market research and gather analytics on who buys legal AI, then use what we learn to tailor our targeting and messaging.</li>
+        <li>Built the GTM and marketing team dashboards in the company's enterprise Claude, packaging 19 ready-to-use modules (prompt libraries, Claude skills, playbooks) so teammates run AI workflows with no setup.</li>
+        <li>Raised team AI literacy with step-by-step skill install guides and a method for checking AI output against goals.</li>
+        <li>Drafted the GTM playbook: ideal customer profile (5–50 attorney litigation firms), signal-based targeting, a Clay prospecting pipeline, and competitor positioning against Harvey and CoCounsel.</li>
+      </ul>
+    </div>
+    <div class="d-stats">
+      <div class="d-stat"><strong>Daily</strong><span>scheduled automations for research and outreach</span></div>
+      <div class="d-stat"><strong>19</strong><span>ready-to-use AI modules shipped to the team</span></div>
+      <div class="d-stat"><strong>5–50</strong><span>attorney litigation firms: the target customer I defined</span></div>
+    </div>
+  </div>
+
+  <div class="d-shots"><h4>Inside the build</h4><div class="shots"><a href="assets/shots/ithildin-1.png" target="_blank"><img src="assets/shots/ithildin-1.png" alt="Screenshot 1"></a><a href="assets/shots/ithildin-2.png" target="_blank"><img src="assets/shots/ithildin-2.png" alt="Screenshot 2"></a><a href="assets/shots/ithildin-3.png" target="_blank"><img src="assets/shots/ithildin-3.png" alt="Screenshot 3"></a><a href="assets/shots/ithildin-4.png" target="_blank"><img src="assets/shots/ithildin-4.png" alt="Screenshot 4"></a><a href="assets/shots/ithildin-5.png" target="_blank"><img src="assets/shots/ithildin-5.png" alt="Screenshot 5"></a><a href="assets/shots/ithildin-6.png" target="_blank"><img src="assets/shots/ithildin-6.png" alt="Screenshot 6"></a><a href="assets/shots/ithildin-7.png" target="_blank"><img src="assets/shots/ithildin-7.png" alt="Screenshot 7"></a><a href="assets/shots/ithildin-8.png" target="_blank"><img src="assets/shots/ithildin-8.png" alt="Screenshot 8"></a></div></div>
+</template>
+
+<template id="d-swinson">
+  <div class="d-top"><img src="assets/swinson-logo.png" alt="Swinson Electric logo" style="height:46px"></div>
+  <h2 class="d-title">AI Takeoffs</h2>
+  <div class="d-meta"><span>AI Integration Intern</span><span>Jul 2026</span><span>San Diego, CA</span></div>
+  <p class="d-lede">Estimators at a commercial electrical contractor spent 30 to 40 hours per job counting outlets, fixtures and switches on blueprints by hand. I built an AI tool that does the count, then has a second model check it.</p>
+  <div class="d-grid">
+    <div>
+      <h4>What I built</h4>
+      <ul class="d-list">
+        <li>An AI estimating tool that reads commercial electrical blueprints and produces automated quantity takeoffs.</li>
+        <li>A two-model pipeline with an independent second-pass check that catches missed and double-counted devices.</li>
+        <li>Tracked per-model API costs and used tiered model routing to cut projected operating spend roughly 30% against a single-model setup.</li>
+      </ul>
+    </div>
+    <div class="d-stats">
+      <div class="d-stat"><strong>97%</strong><span>device-count accuracy, validated by the CEO</span></div>
+      <div class="d-stat"><strong>30–40 → ~8</strong><span>hours per job, start to finish</span></div>
+      <div class="d-stat"><strong>~30%</strong><span>lower projected AI operating cost</span></div>
+    </div>
+  </div>
+
+  <div class="d-shots"><h4>Inside the build</h4><div class="shots"><a href="assets/shots/swinson-1.png" target="_blank"><img src="assets/shots/swinson-1.png" alt="Screenshot 1"></a><a href="assets/shots/swinson-2.png" target="_blank"><img src="assets/shots/swinson-2.png" alt="Screenshot 2"></a><a href="assets/shots/swinson-3.png" target="_blank"><img src="assets/shots/swinson-3.png" alt="Screenshot 3"></a><a href="assets/shots/swinson-4.png" target="_blank"><img src="assets/shots/swinson-4.png" alt="Screenshot 4"></a><a href="assets/shots/swinson-5.png" target="_blank"><img src="assets/shots/swinson-5.png" alt="Screenshot 5"></a><a href="assets/shots/swinson-6.png" target="_blank"><img src="assets/shots/swinson-6.png" alt="Screenshot 6"></a><a href="assets/shots/swinson-7.png" target="_blank"><img src="assets/shots/swinson-7.png" alt="Screenshot 7"></a><a href="assets/shots/swinson-8.png" target="_blank"><img src="assets/shots/swinson-8.png" alt="Screenshot 8"></a></div></div>
+</template>
+
+<template id="d-service">
+  <h2 class="d-title">Service</h2>
+  <div class="d-meta"><span>United States Marine Corps</span><span>2018 – 2022</span><span>Camp Pendleton, CA</span></div>
+  <p class="d-lede">Four years across three of the most demanding jobs on base: detection dog handler, Special Reaction Team, and military police officer.</p>
+  <div class="d-gallery">
+    <img src="assets/usmc-srt-team.jpg" alt="Special Reaction Team group photo">
+    <img class="tall" src="assets/usmc-k9-field.jpg" alt="Garrison in field gear with his military working dog">
+    <img src="assets/usmc-k9-unit.jpg" alt="K9 unit with their dogs and an American flag">
+    <img class="tall" src="assets/usmc-range.jpg" alt="Garrison and a fellow Marine at the rifle range">
+  </div>
+  <div class="d-grid">
+    <div>
+      <h4>Roles</h4>
+      <ul class="d-list">
+        <li><b>K9 Handler</b> (2019–2020): drug- and explosive-detection dogs, plus bitework, tracking and field operations.</li>
+        <li><b>Special Reaction Team</b> (2020–2021): the base SWAT team, specializing in hostage rescue, barricaded suspects and active shooter response.</li>
+        <li><b>Military Police Officer</b> (2021–2022): responded to over 370 calls, including domestic violence, accidents and medical emergencies. Certified Field Training Officer.</li>
+      </ul>
+    </div>
+    <div class="d-stats">
+      <div class="d-stat"><strong>370+</strong><span>calls for service</span></div>
+      <div class="d-stat"><strong>NAM</strong><span>Navy and Marine Corps Achievement Medal, for leadership above rank</span></div>
+    </div>
+  </div>
+</template>
+
+<template id="d-k9">
+  <h2 class="d-title">GB K9 Training</h2>
+  <div class="d-meta"><span>Director and Founder</span><span>Apr 2024 – Aug 2025</span><span>Mill Valley, CA</span></div>
+  <p class="d-lede">After the Marine Corps I turned my K9 handling experience into a business, training family dogs from the first call through a finished program.</p>
+  <div class="d-grid">
+    <div>
+      <h4>What I did</h4>
+      <ul class="d-list">
+        <li>Ran the whole business myself: finding clients, scheduling, training and follow-up.</li>
+        <li>Built programs around obedience, behavior modification and specialized training.</li>
+      </ul>
+    </div>
+    <div class="d-stats">
+      <div class="d-stat"><strong>25</strong><span>dogs trained</span></div>
+      <div class="d-stat"><strong>$12,000</strong><span>in revenue</span></div>
+    </div>
+  </div>
+
+  <figure class="d-quote">
+    <blockquote>“I can’t think of enough good things to say about trainer Garrison Bowen. Note that I say ‘trainer’ and not ‘dog trainer’ because he was as insightful and patient with us as he was with our two pups, Shorty and Smudge! Garrison instantly and instinctively saw the dynamics between us and the dogs and within minutes gave us practical tools to establish a more balanced hierarchy, and the dogs are blossoming. As a recent dog trainer in the Marines, Garrison brings unsurpassed bona fides and demonstrates respect for canines and humans alike. We knew the dogs were smart but with the resources that Garrison has taught us, we now better understand the boundaries they need to grow and thrive in our care.”</blockquote>
+    <figcaption>Christopher N. and Caroline P. · Shorty and Smudge’s family, Mill Valley</figcaption>
+  </figure>
+</template>
+
+<template id="d-buddy">
+  <div class="d-top"><img src="assets/buddycheck-logo.png" alt="Buddy Check logo" style="height:90px"></div>
+  <h2 class="d-title">Buddy Check</h2>
+  <div class="d-meta"><span>Creator and Founder</span><span>Dec 2022 – Present</span><span>Buddy Check LLC</span></div>
+  <p class="d-lede">More than 200,000 veterans leave the military every year, and many lose the tight community they had in service. Buddy Check is a verified, veteran-only app that rebuilds that connection.</p>
+  <div class="d-grid">
+    <div>
+      <h4>What it does</h4>
+      <ul class="d-list">
+        <li>Daily check-ins, so a veteran who is struggling gets noticed early.</li>
+        <li>Connects veterans to each other through community meet-ups, and to mental health therapists.</li>
+        <li>Identity verification so the community stays veteran-only.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Where it stands</h4>
+      <ul class="d-list">
+        <li>I built the app myself with AI-assisted development and set up the business from scratch: LLC, fundraising, hiring and payroll.</li>
+        <li>Applied to UC Berkeley SkyDeck and pursuing federal grant funding.</li>
+        <li>Now focused on a simpler first version to launch.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="d-shots"><h4>Inside the build</h4><div class="shots phones"><a href="assets/shots/buddy-1.png" target="_blank"><img src="assets/shots/buddy-1.png" alt="Screenshot 1"></a><a href="assets/shots/buddy-2.png" target="_blank"><img src="assets/shots/buddy-2.png" alt="Screenshot 2"></a><a href="assets/shots/buddy-3.png" target="_blank"><img src="assets/shots/buddy-3.png" alt="Screenshot 3"></a><a href="assets/shots/buddy-4.png" target="_blank"><img src="assets/shots/buddy-4.png" alt="Screenshot 4"></a><a href="assets/shots/buddy-5.png" target="_blank"><img src="assets/shots/buddy-5.png" alt="Screenshot 5"></a><a href="assets/shots/buddy-6.png" target="_blank"><img src="assets/shots/buddy-6.png" alt="Screenshot 6"></a><a href="assets/shots/buddy-7.png" target="_blank"><img src="assets/shots/buddy-7.png" alt="Screenshot 7"></a><a href="assets/shots/buddy-8.png" target="_blank"><img src="assets/shots/buddy-8.png" alt="Screenshot 8"></a></div></div>
+</template>
+
+<template id="d-jarvis">
+  <h2 class="d-title">JARVIS</h2>
+  <div class="d-meta"><span>Personal project</span><span>2026</span><span>Built with Claude Code</span></div>
+  <p class="d-lede">A personal AI chief of staff that runs on my laptop and my phone. It pulls my calendar, email and coursework together and tells me what to do next.</p>
+  <div class="d-grid">
+    <div>
+      <h4>What it does</h4>
+      <ul class="d-list">
+        <li>Writes a daily brief each morning from my calendar and inbox.</li>
+        <li>Syncs class assignments and deadlines automatically.</li>
+        <li>Tracks job applications and checks for replies.</li>
+      </ul>
+    </div>
+    <div class="d-stats">
+      <div class="d-stat"><strong>1 app</strong><span>for school, work and ventures, on desktop and iPhone</span></div>
+    </div>
+  </div>
+
+  <div class="d-shots"><h4>Inside the build</h4><div class="shots"><a href="assets/shots/jarvis-1.png" target="_blank"><img src="assets/shots/jarvis-1.png" alt="Screenshot 1"></a><a href="assets/shots/jarvis-2.png" target="_blank"><img src="assets/shots/jarvis-2.png" alt="Screenshot 2"></a><a href="assets/shots/jarvis-3.png" target="_blank"><img src="assets/shots/jarvis-3.png" alt="Screenshot 3"></a><a href="assets/shots/jarvis-4.png" target="_blank"><img src="assets/shots/jarvis-4.png" alt="Screenshot 4"></a><a href="assets/shots/jarvis-5.png" target="_blank"><img src="assets/shots/jarvis-5.png" alt="Screenshot 5"></a><a href="assets/shots/jarvis-6.png" target="_blank"><img src="assets/shots/jarvis-6.png" alt="Screenshot 6"></a><a href="assets/shots/jarvis-7.png" target="_blank"><img src="assets/shots/jarvis-7.png" alt="Screenshot 7"></a><a href="assets/shots/jarvis-8.png" target="_blank"><img src="assets/shots/jarvis-8.png" alt="Screenshot 8"></a></div></div>
+</template>
+
+<template id="d-atlas">
+  <div class="d-top"><img src="assets/atlas-logo.png" alt="A.T.L.A.S. logo" style="height:60px"></div>
+  <h2 class="d-title">A.T.L.A.S.</h2>
+  <div class="d-meta"><span>Founder and CEO</span><span>2026 – Present</span></div>
+  <p class="d-lede">The big idea behind A.T.L.A.S.: most people know AI exists but not how to use it in their own work. A.T.L.A.S. teaches people AI and how to apply it to the jobs they already do.</p>
+  <div class="d-grid">
+    <div>
+      <h4>The approach</h4>
+      <ul class="d-list">
+        <li>Start from a real task someone already does, not from the technology.</li>
+        <li>Show the AI workflow working on that task, then teach them to run and check it themselves.</li>
+        <li>Prove it in one industry first. We picked electrical estimating, where I had already built a working tool.</li>
+      </ul>
+    </div>
+    <div class="d-stats">
+      <div class="d-stat"><strong>Teach</strong><span>how AI works, in plain language</span></div>
+      <div class="d-stat"><strong>Apply</strong><span>it to the work people already do</span></div>
+    </div>
+  </div>
+
+  <div class="d-shots"><h4>Inside the build</h4><div class="shots"><a href="assets/shots/atlas-1.png" target="_blank"><img src="assets/shots/atlas-1.png" alt="Screenshot 1"></a><a href="assets/shots/atlas-2.png" target="_blank"><img src="assets/shots/atlas-2.png" alt="Screenshot 2"></a><a href="assets/shots/atlas-3.png" target="_blank"><img src="assets/shots/atlas-3.png" alt="Screenshot 3"></a><a href="assets/shots/atlas-4.png" target="_blank"><img src="assets/shots/atlas-4.png" alt="Screenshot 4"></a><a href="assets/shots/atlas-5.png" target="_blank"><img src="assets/shots/atlas-5.png" alt="Screenshot 5"></a><a href="assets/shots/atlas-6.png" target="_blank"><img src="assets/shots/atlas-6.png" alt="Screenshot 6"></a><a href="assets/shots/atlas-7.png" target="_blank"><img src="assets/shots/atlas-7.png" alt="Screenshot 7"></a><a href="assets/shots/atlas-8.png" target="_blank"><img src="assets/shots/atlas-8.png" alt="Screenshot 8"></a></div></div>
+</template>
+
+<template id="d-estimating">
+  <div class="d-top"><img src="assets/atlas-logo.png" alt="A.T.L.A.S. logo" style="height:56px"></div>
+  <h2 class="d-title">AI Estimating</h2>
+  <div class="d-meta"><span>Founder and CEO, team of five</span><span>Aug 2026 – Present</span><span>Berkeley Method of Entrepreneurship</span></div>
+  <p class="d-lede">To get a foothold, A.T.L.A.S. started with one painful job: estimating for electrical contractors. Counting devices on blueprints eats days that crews could spend on paying work.</p>
+  <div class="d-grid">
+    <div>
+      <h4>What we built</h4>
+      <ul class="d-list">
+        <li>Formed and led a five-person founding team during Berkeley's entrepreneurship bootcamp (SCET, ENGIN 183B), and pitched to judges.</li>
+        <li>An AI estimating service built on the takeoff tool I proved out at Swinson Electric.</li>
+        <li>Pricing built around results: a 0.5% commission on contract revenue plus a $100 monthly subscription.</li>
+        <li>A tiered outreach list of California electrical contractors to win the first customers.</li>
+      </ul>
+    </div>
+    <div class="d-stats">
+      <div class="d-stat"><strong>97%</strong><span>device-count accuracy in the Swinson pilot</span></div>
+      <div class="d-stat"><strong>30–40 → ~8</strong><span>hours per job in the pilot</span></div>
+    </div>
+  </div>
+
+  <div class="d-shots"><h4>Inside the build</h4><div class="shots"><a href="assets/shots/estimating-1.png" target="_blank"><img src="assets/shots/estimating-1.png" alt="Screenshot 1"></a><a href="assets/shots/estimating-2.png" target="_blank"><img src="assets/shots/estimating-2.png" alt="Screenshot 2"></a><a href="assets/shots/estimating-3.png" target="_blank"><img src="assets/shots/estimating-3.png" alt="Screenshot 3"></a><a href="assets/shots/estimating-4.png" target="_blank"><img src="assets/shots/estimating-4.png" alt="Screenshot 4"></a><a href="assets/shots/estimating-5.png" target="_blank"><img src="assets/shots/estimating-5.png" alt="Screenshot 5"></a><a href="assets/shots/estimating-6.png" target="_blank"><img src="assets/shots/estimating-6.png" alt="Screenshot 6"></a><a href="assets/shots/estimating-7.png" target="_blank"><img src="assets/shots/estimating-7.png" alt="Screenshot 7"></a><a href="assets/shots/estimating-8.png" target="_blank"><img src="assets/shots/estimating-8.png" alt="Screenshot 8"></a></div></div>
+</template>
+
+<script>
+  // footer ruler ticks
+  const ruler = document.getElementById('ruler');
+  for (let i = -11; i <= 11; i++) {
+    const t = document.createElement('i');
+    if (i === 0) t.className = 'top'; else if (Math.abs(i) <= 5) t.className = 'mid';
+    ruler.appendChild(t);
+  }
+
+  // light / dark toggle
+  const root = document.documentElement, btn = document.getElementById('toggle');
+  try { const saved = localStorage.getItem('theme'); if (saved) root.dataset.theme = saved; } catch (e) {}
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const paint = () => { btn.textContent = isDark() ? '☾' : '☀'; };
+  paint();
+  btn.addEventListener('click', () => {
+    root.dataset.theme = isDark() ? 'light' : 'dark';
+    try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
+    paint();
+  });
+
+  // fade in on scroll
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // nav highlight
+  const links = [...document.querySelectorAll('nav a')];
+  const targets = links.map(a => document.querySelector(a.getAttribute('href')));
+  addEventListener('scroll', () => {
+    let idx = 0;
+    targets.forEach((t, i) => { if (t.getBoundingClientRect().top < innerHeight * 0.4) idx = i; });
+    links.forEach((a, i) => a.classList.toggle('active', i === idx));
+  }, { passive: true });
+
+  // card -> expanded sheet. The sheet starts exactly on top of the card, then grows to fill the screen.
+  const sheet = document.getElementById('sheet'), body = document.getElementById('sheetBody');
+  const backdrop = document.getElementById('backdrop'), closeBtn = document.getElementById('close');
+  let current = null;
+
+  const place = r => Object.assign(sheet.style, { top: r.top + 'px', left: r.left + 'px', width: r.width + 'px', height: r.height + 'px' });
+
+  function open(card) {
+    if (current) return;
+    current = card;
+    const cs = getComputedStyle(card);
+    sheet.className = 'sheet ' + [...card.classList].filter(c => ['lav','amber','sage','sky','cyan','white','dark','atlas'].includes(c)).join(' ');
+    sheet.style.background = cs.background;
+    sheet.style.color = cs.color;
+    body.innerHTML = document.getElementById('d-' + card.dataset.detail).innerHTML;
+    body.scrollTop = 0;
+    body.querySelectorAll('.d-shots').forEach(sec => {
+      const imgs = [...sec.querySelectorAll('img')];
+      sec.hidden = true;
+      imgs.forEach(img => {
+        const done = ok => { if (ok) sec.hidden = false; else img.parentElement.remove(); };
+        if (img.complete) done(img.naturalWidth > 0);
+        else { img.onload = () => done(true); img.onerror = () => done(false); }
+      });
+    });
+    sheet.style.transition = 'none';
+    place(card.getBoundingClientRect());
+    sheet.style.borderRadius = cs.borderRadius;
+    sheet.style.display = 'block';
+    card.classList.add('is-open');
+    document.body.classList.add('locked');
+    sheet.offsetWidth; // apply the start position before animating
+    sheet.style.transition = '';
+    const w = Math.min(1000, innerWidth - (innerWidth < 860 ? 0 : 48));
+    const h = innerWidth < 860 ? innerHeight : innerHeight - 48;
+    place({ top: (innerHeight - h) / 2, left: (innerWidth - w) / 2, width: w, height: h });
+    sheet.style.borderRadius = innerWidth < 860 ? '0px' : '40px';
+    backdrop.classList.add('show');
+    setTimeout(() => { sheet.classList.add('ready'); closeBtn.focus(); }, 380);
+  }
+
+  function close() {
+    if (!current) return;
+    const card = current;
+    sheet.classList.remove('ready');
+    backdrop.classList.remove('show');
+    setTimeout(() => {
+      place(card.getBoundingClientRect());
+      sheet.style.borderRadius = getComputedStyle(card).borderRadius;
+      setTimeout(() => {
+        sheet.style.display = 'none';
+        card.classList.remove('is-open');
+        document.body.classList.remove('locked');
+        card.focus({ preventScroll: true });
+        current = null;
+      }, 560);
+    }, 150);
+  }
+
+  document.querySelectorAll('.card[data-detail]').forEach(card => {
+    card.addEventListener('click', () => open(card));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(card); } });
+  });
+  closeBtn.addEventListener('click', close);
+  backdrop.addEventListener('click', close);
+  addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+</script>
+</body>
+</html>
